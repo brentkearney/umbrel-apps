@@ -1,0 +1,66 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: openmemory-web-1
+      APP_PORT: 3000
+      PROXY_AUTH_ADD: "false"
+
+  web:
+    image: ghcr.io/brentkearney/openmemory-ui:0.1.0
+    restart: on-failure
+    environment:
+      NEXT_PUBLIC_API_URL: http://${DEVICE_DOMAIN_NAME}:8765
+      NEXT_PUBLIC_USER_ID: umbrel
+    depends_on:
+      - api
+
+  api:
+    image: ghcr.io/brentkearney/openmemory-api:0.1.1
+    restart: on-failure
+    ports:
+      - "8765:8765"
+    environment:
+      DATABASE_URL: sqlite:////data/openmemory.db
+      USER: umbrel
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: "6333"
+      OPENAI_API_KEY: "placeholder"
+      LLM_BASE_URL: "https://openrouter.ai/api/v1"
+      EMBEDDER_BASE_URL: "https://openrouter.ai/api/v1"
+      NEO4J_URL: bolt://neo4j:7687
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: ${APP_PASSWORD}
+    volumes:
+      - ${APP_DATA_DIR}/data/api-db:/data
+    depends_on:
+      - qdrant
+      - neo4j
+
+  qdrant:
+    image: qdrant/qdrant:v1.13.2
+    restart: on-failure
+    volumes:
+      - ${APP_DATA_DIR}/data/qdrant:/qdrant/storage
+
+  neo4j:
+    image: neo4j:5.26.4
+    restart: on-failure
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/${APP_PASSWORD}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+    volumes:
+      - ${APP_DATA_DIR}/data/neo4j:/data
+    healthcheck:
+      test: wget -q --spider http://localhost:7474 || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
