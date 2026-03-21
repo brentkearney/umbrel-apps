@@ -1,0 +1,47 @@
+manifestVersion: 1
+id: openmemory
+name: OpenMemory
+tagline: Universal memory layer for AI apps and agents
+category: ai
+version: "0.1.0"
+port: 3000
+description: >-
+  OpenMemory provides a universal memory layer for your AI applications.
+  It uses Mem0 to store, retrieve, and manage memories across any LLM-powered
+  app or agent, giving your AI persistent context that grows over time.
+
+
+  Memories are stored locally in a Qdrant vector database and a Neo4j graph
+  database on your Umbrel, keeping your data private and under your control.
+
+
+  After installing, open the Settings page to configure your preferred LLM
+  and embedding provider (OpenAI, Anthropic, Ollama, OpenRouter, etc.).
+
+
+  Features:
+    - Web UI for browsing and managing memories
+    - REST API and MCP server for integrating with AI apps
+    - Supports OpenAI, Anthropic, Ollama, OpenRouter, and other LLM providers
+    - Vector search with Qdrant for fast semantic memory retrieval
+    - Graph memory with Neo4j for relationship-aware recall
+    - Configurable LLM and embedding providers
+developer: Mem0
+website: https://mem0.ai
+submitter: Brent
+submission: ""
+repo: https://github.com/mem0ai/mem0
+support: https://github.com/mem0ai/mem0/issues
+gallery:
+  - 1.jpg
+  - 2.jpg
+  - 3.jpg
+defaultUsername: ""
+defaultPassword: ""
+dependencies: []
+releaseNotes: >-
+  Initial release of OpenMemory for Umbrel.
+path: ""
+torOnly: false
+# Must be true: Neo4j and other internal services use ${APP_PASSWORD} for authentication
+deterministicPassword: true
