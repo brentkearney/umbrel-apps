@@ -40,6 +40,4 @@ services:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=${APP_PASSWORD}
       - OPENAI_API_KEY=placeholder
-      - CONFIG_PATH=/app/mcp/config/config.yaml
-    volumes:
-      - ${APP_DATA_DIR}/config/config.yaml:/app/mcp/config/config.yaml:ro
+    command: ["uv", "run", "--no-sync", "main.py", "--database-provider", "neo4j"]
